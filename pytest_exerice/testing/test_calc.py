@@ -1,3 +1,5 @@
+import logging
+
 import allure
 import pytest
 import yaml
@@ -39,6 +41,7 @@ class TestCalc:
     @pytest.mark.run(order=2)
     @pytest.mark.parametrize("a,b,expect", get_datas()[0],ids=get_datas()[1])
     def test_add_int(self,get_calc,a,b,expect):
+        logging.info(f"加法计算参数int类型：{a, b, expect}")
         result = get_calc.add(a,b)
         assert result==expect
 
@@ -46,14 +49,18 @@ class TestCalc:
     @pytest.mark.run(order=3)
     @pytest.mark.parametrize("a,b,expect", get_datas()[2], ids=get_datas()[3])
     def test_add_float(self, get_calc, a, b, expect):
+        logging.info(f"加法计算参数float类型：{a, b, expect}")
         result = get_calc.add(a, b)
         assert round(result,2) == expect
+        with allure.step("保存图片"):
+            allure.attach.file("./result2/b.png", attachment_type=allure.attachment_type.PNG)
 
     #@pytest.mark.parametrize("a,b,expect",  get_datas()[4], ids=get_datas()[5])
     @allure.story("除法计算")
     @pytest.mark.run(order=1)
     def test_div(self,get_calc,get_datas_byfixture):
         try:
+          logging.info(f"除法计算参数：{str(get_datas_byfixture)}")
           result = get_calc.div(get_datas_byfixture[0],get_datas_byfixture[1])
         except ZeroDivisionError as e :
           result="ZeroDivisionError"
@@ -64,4 +71,4 @@ class TestCalc:
 
         assert result == get_datas_byfixture[2]
 
-        allure.attach.file("./result2/b.png", attachment_type=allure.attachment_type.PNG)
+
